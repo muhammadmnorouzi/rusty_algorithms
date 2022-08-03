@@ -50,7 +50,7 @@ pub fn two_sum_3(arr: &mut [i32], expected: i32) -> Option<(i32, i32)> {
         } else if sum < expected {
             left += 1
         } else if sum > expected {
-            right += 1
+            right -= 1
         }
     }
 
@@ -101,12 +101,15 @@ mod tests {
     fn two_sum_3_test() {
         // Given
         let mut input_array: Vec<i32> = vec![1, 2, 4, 3, -3, 13, 7, 10, 0, 1, -5, 15];
+        let mut input_array_2: Vec<i32> = vec![1, 2, 3, 4, 10, 15, 19];
         let inupt_expected = 10;
 
         // When
         let output = two_sum_3(&mut input_array, inupt_expected);
+        let output2 = two_sum_3(&mut input_array_2, inupt_expected);
 
         // Then
+        assert!(output2.is_none());
         assert!(output.is_some());
 
         let (left, right) = output.unwrap();
