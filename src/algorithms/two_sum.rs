@@ -51,10 +51,6 @@ mod tests {
         let output = two_sum_1(&input_array, inupt_expected);
 
         // Then
-        for item in output.clone() {
-            assert_eq!(inupt_expected, item.0 + item.1);
-        }
-
         assert_eq!(expected_output.len(), output.len());
 
         for i in 0..output.len() {
@@ -73,10 +69,6 @@ mod tests {
         let output = two_sum_2(&input_array, inupt_expected);
 
         // Then
-        for item in output.clone() {
-            assert_eq!(inupt_expected, item.0 + item.1);
-        }
-
         assert_eq!(expected_output.len(), output.len());
 
         for i in 0..output.len() {
