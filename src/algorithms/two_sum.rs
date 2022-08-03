@@ -1,5 +1,4 @@
 #[allow(unused)]
-
 pub fn two_sum_1(arr: &[i32], expected: i32) -> Vec<(i32, i32)> {
     let mut result: Vec<(i32, i32)> = vec![];
 
@@ -19,6 +18,7 @@ pub fn two_sum_1(arr: &[i32], expected: i32) -> Vec<(i32, i32)> {
     result
 }
 
+#[allow(unused)]
 pub fn two_sum_2(arr: &[i32], expected: i32) -> Vec<(i32, i32)> {
     let mut result: Vec<(i32, i32)> = vec![];
     let mut num_helper: Vec<i32> = vec![];
