@@ -1,4 +1,5 @@
-#[allow(unused)]
+#![allow(unused)]
+
 pub fn two_sum_1(arr: &[i32], expected: i32) -> Vec<(i32, i32)> {
     let mut result: Vec<(i32, i32)> = vec![];
 
@@ -18,7 +19,6 @@ pub fn two_sum_1(arr: &[i32], expected: i32) -> Vec<(i32, i32)> {
     result
 }
 
-#[allow(unused)]
 pub fn two_sum_2(arr: &[i32], expected: i32) -> Vec<(i32, i32)> {
     let mut result: Vec<(i32, i32)> = vec![];
     let mut num_helper: Vec<i32> = vec![];
@@ -34,6 +34,27 @@ pub fn two_sum_2(arr: &[i32], expected: i32) -> Vec<(i32, i32)> {
     }
 
     result
+}
+
+pub fn two_sum_3(arr: &mut [i32], expected: i32) -> Option<(i32, i32)> {
+    arr.sort();
+
+    let mut left: usize = 0;
+    let mut right: usize = arr.len() - 1;
+
+    while left < right {
+        let sum = arr[left] + arr[right];
+
+        if sum == expected {
+            return Some((arr[left], arr[right]));
+        } else if sum < expected {
+            left += 1
+        } else if sum > expected {
+            right += 1
+        }
+    }
+
+    None
 }
 
 #[cfg(test)]
@@ -74,5 +95,23 @@ mod tests {
         for i in 0..output.len() {
             assert_eq!(expected_output[i], output[i]);
         }
+    }
+
+    #[test]
+    fn two_sum_3_test() {
+        // Given
+        let mut input_array: Vec<i32> = vec![1, 2, 4, 3, -3, 13, 7, 10, 0, 1, -5, 15];
+        let inupt_expected = 10;
+
+        // When
+        let output = two_sum_3(&mut input_array, inupt_expected);
+
+        // Then
+        assert!(output.is_some());
+
+        let (left, right) = output.unwrap();
+
+        assert_eq!(left, -5);
+        assert_eq!(right, 15);
     }
 }
