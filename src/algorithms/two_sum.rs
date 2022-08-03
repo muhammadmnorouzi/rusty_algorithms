@@ -26,7 +26,7 @@ pub fn two_sum_2(arr: &[i32], expected: i32) -> Vec<(i32, i32)> {
     for number in arr.iter() {
         let potential_match = expected - number;
 
-        if (num_helper.contains(&potential_match)) {
+        if num_helper.contains(&potential_match) {
             result.push((*number, potential_match));
         } else {
             num_helper.push(*number)
