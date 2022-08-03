@@ -65,11 +65,13 @@ mod tests {
     fn two_sum_1_test() {
         // Given
         let input_array: Vec<i32> = vec![1, 2, 4, 3, -3, 13, 7, 10, 0, 1, -5, 15];
+        let mut input_array_2: Vec<i32> = vec![1, 2, 3, 4, 10, 15, 19];
         let inupt_expected = 10;
         let expected_output = vec![(3, 7), (-3, 13), (10, 0), (-5, 15)];
 
         // When
         let output = two_sum_1(&input_array, inupt_expected);
+        let output2 = two_sum_2(&input_array_2, inupt_expected);
 
         // Then
         assert_eq!(expected_output.len(), output.len());
@@ -77,17 +79,21 @@ mod tests {
         for i in 0..output.len() {
             assert_eq!(expected_output[i], output[i]);
         }
+
+        assert_eq!(0, output2.len())
     }
 
     #[test]
     fn two_sum_2_test() {
         // Given
         let input_array: Vec<i32> = vec![1, 2, 4, 3, -3, 13, 7, 10, 0, 1, -5, 15];
+        let mut input_array_2: Vec<i32> = vec![1, 2, 3, 4, 10, 15, 19];
         let inupt_expected = 10;
         let expected_output = vec![(13, -3), (7, 3), (0, 10), (15, -5)];
 
         // When
         let output = two_sum_2(&input_array, inupt_expected);
+        let output2 = two_sum_2(&input_array_2, inupt_expected);
 
         // Then
         assert_eq!(expected_output.len(), output.len());
@@ -95,6 +101,8 @@ mod tests {
         for i in 0..output.len() {
             assert_eq!(expected_output[i], output[i]);
         }
+
+        assert_eq!(0, output2.len())
     }
 
     #[test]
@@ -109,12 +117,13 @@ mod tests {
         let output2 = two_sum_3(&mut input_array_2, inupt_expected);
 
         // Then
-        assert!(output2.is_none());
         assert!(output.is_some());
 
         let (left, right) = output.unwrap();
 
         assert_eq!(left, -5);
         assert_eq!(right, 15);
+
+        assert!(output2.is_none());
     }
 }
