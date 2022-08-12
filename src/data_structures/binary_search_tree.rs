@@ -4,16 +4,16 @@ use std::{collections::binary_heap, fmt::Display, mem::swap};
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Clone)]
 pub struct Node<T> {
-    data: T,
-    left: Child<T>,
-    right: Child<T>,
+    pub data: T,
+    pub left: Child<T>,
+    pub right: Child<T>,
 }
 
 type Child<T> = Option<Box<Node<T>>>;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Clone)]
 pub struct BinarySearchTree<T: PartialOrd + Clone> {
-    root: Child<T>,
+    pub root: Child<T>,
 }
 
 impl<T: PartialOrd + Clone + Display> Node<T> {
