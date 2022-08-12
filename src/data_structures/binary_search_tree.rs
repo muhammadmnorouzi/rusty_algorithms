@@ -1,6 +1,6 @@
 // Thanks to open source existing impls
 #![allow(unused)]
-use std::{fmt::Display, mem::swap};
+use std::{collections::binary_heap, fmt::Display, mem::swap};
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Clone)]
 pub struct Node<T> {
@@ -40,6 +40,22 @@ impl<T: PartialOrd + Clone + Display> Node<T> {
         match &self.right {
             Some(right) => Node::max(&right),
             None => self.data(),
+        }
+    }
+
+    pub fn find(&self, data: &T) -> Option<Box<&Node<T>>> {
+        if data > &self.data {
+            match self.right {
+                Some(ref right) => right.find(data),
+                None => None,
+            }
+        } else if data < &self.data {
+            match self.left {
+                Some(ref left) => left.find(data),
+                None => None,
+            }
+        } else {
+            Some(Box::from(self))
         }
     }
 
@@ -108,10 +124,40 @@ impl<T: PartialOrd + Clone + Display> BinarySearchTree<T> {
         BinarySearchTree { root: None }
     }
 
-    pub fn insert(&mut self, data: T) {
+    pub fn insert(&mut self, data: T) -> Box<&mut BinarySearchTree<T>> {
         match self.root {
             Some(ref mut root) => root.insert(data),
             None => swap(&mut self.root, &mut Some(Box::from(Node::new(data)))),
+        };
+
+        Box::new(self)
+    }
+
+    pub fn min(&self) -> Option<T> {
+        match self.root {
+            Some(ref root) => Some(root.min()),
+            None => None,
+        }
+    }
+
+    pub fn max(&self) -> Option<T> {
+        match self.root {
+            Some(ref root) => Some(root.max()),
+            None => None,
+        }
+    }
+
+    pub fn find(&self, data: &T) -> Option<Box<&Node<T>>> {
+        match self.root {
+            Some(ref root) => root.find(data),
+            None => None,
+        }
+    }
+
+    pub fn exists(&self, data: &T) -> bool {
+        match self.find(data) {
+            _ => true,
+            None => false,
         }
     }
 
