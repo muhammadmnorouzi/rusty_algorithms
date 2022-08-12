@@ -31,6 +31,39 @@ fn find_closest_value_in_bst_1_helper(
     }
 }
 
+pub fn find_closest_value_in_bst_2(tree: &BinarySearchTree<i32>, data: i32) -> Option<i32>
+where
+{
+    find_closest_value_in_bst_2_helper(&tree.root, data, std::i32::MAX)
+}
+
+fn find_closest_value_in_bst_2_helper(
+    node: &Option<Box<Node<i32>>>,
+    target: i32,
+    closest: i32,
+) -> Option<i32> {
+    let mut current_node = node;
+    let mut closest = closest;
+
+    loop {
+        if let Some(node) = current_node {
+            if i32::abs(target - closest) > i32::abs(target - node.data) {
+                closest = node.data;
+            }
+
+            if target < node.data {
+                current_node = &node.left;
+            } else if target > node.data {
+                current_node = &node.right;
+            } else {
+                return Some(closest);
+            }
+        } else {
+            return Some(closest);
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -50,5 +83,22 @@ mod tests {
         assert_eq!(find_closest_value_in_bst_1(&bst, 14), Some(15));
         assert_eq!(find_closest_value_in_bst_1(&bst, 12), Some(10));
         assert_eq!(find_closest_value_in_bst_1(&bst, 17), Some(18));
+    }
+
+    #[test]
+    fn bst_find_closest_value_2() {
+        let mut bst: BinarySearchTree<i32> = BinarySearchTree::new();
+        bst.insert(7)
+            .insert(9)
+            .insert(15)
+            .insert(10)
+            .insert(20)
+            .insert(25)
+            .insert(18);
+
+        assert_eq!(find_closest_value_in_bst_2(&bst, 16), Some(15));
+        assert_eq!(find_closest_value_in_bst_2(&bst, 14), Some(15));
+        assert_eq!(find_closest_value_in_bst_2(&bst, 12), Some(10));
+        assert_eq!(find_closest_value_in_bst_2(&bst, 17), Some(18));
     }
 }
