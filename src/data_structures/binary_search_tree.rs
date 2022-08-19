@@ -53,7 +53,7 @@ where
     }
 
     pub fn is_leaf(&self) -> bool {
-        if let (Nont, None) = (&self.left, &self.right) {
+        if let (None, None) = (&self.left, &self.right) {
             return true;
         }
 
