@@ -4,7 +4,7 @@ use std::{clone, ops::Add};
 
 use crate::data_structures::{BinarySearchTree, Child};
 
-pub fn branch_sum<T>(tree: BinarySearchTree<T>, acc: T) -> Vec<T>
+pub fn branch_sums<T>(tree: BinarySearchTree<T>, acc: T) -> Vec<T>
 where
     T: Ord + Eq + Add + Clone + From<<T as Add>::Output>,
 {
@@ -51,7 +51,7 @@ mod tests {
             .insert(20);
 
         let expected = vec![22, 26, 39, 63];
-        let function_result = branch_sum(tree, 0);
+        let function_result = branch_sums(tree, 0);
 
         assert_eq!(expected, function_result);
     }
