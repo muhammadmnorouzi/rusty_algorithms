@@ -1,5 +1,3 @@
-pub use binary_search_tree::BinarySearchTree;
-pub use node::{Child, Node};
+pub use binary_search_tree::{BinarySearchTree, Child};
 
 mod binary_search_tree;
-mod node;
