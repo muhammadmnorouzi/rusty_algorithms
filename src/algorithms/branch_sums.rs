@@ -1,8 +1,5 @@
-// use std::collections::binary_heap;
-
-use std::{clone, ops::Add};
-
 use crate::data_structures::{BinarySearchTree, Child};
+use std::{clone, ops::Add};
 
 pub fn branch_sums<T>(tree: BinarySearchTree<T>, acc: T) -> Vec<T>
 where
