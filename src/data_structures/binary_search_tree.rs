@@ -2,6 +2,7 @@
 
 use std::clone;
 use std::cmp::Ordering;
+use std::collections::binary_heap;
 use std::ops::Deref;
 
 /// This struct implements as Binary Search Tree (BST), which is a
@@ -49,6 +50,14 @@ where
 
     pub fn get_right(&self) -> &Child<T> {
         &self.right
+    }
+
+    pub fn is_leaf(&self) -> bool {
+        if let (Nont, None) = (&self.left, &self.right) {
+            return true;
+        }
+
+        false
     }
 
     /// Find a value in this tree. Returns True iff value is in this
@@ -265,6 +274,16 @@ mod test {
 
         tree.insert(5);
         assert_eq!(tree.get_value(), Some(5));
+    }
+
+    #[test]
+    fn test_is_leaf() {
+        let mut tree: BinarySearchTree<i32> = BinarySearchTree::new();
+        assert!(tree.is_leaf());
+
+        tree.insert(5);
+        tree.insert(7);
+        assert_eq!(tree.is_leaf(), false);
     }
 
     #[test]
