@@ -1,62 +1,108 @@
-use crate::data_structures::{BinarySearchTree, Node};
+use std::ops::{Deref, Sub};
 
-pub fn find_closest_value_in_bst_1(tree: &BinarySearchTree<i32>, data: i32) -> Option<i32>
+use crate::data_structures::{BinarySearchTree, Child};
+
+pub fn find_closest_value_in_bst_1<'a, T, F, UT>(
+    tree: BinarySearchTree<T>,
+    data: T,
+    max: T,
+    abs_diff_calculator: F,
+) -> Option<T>
 where
+    T: Ord + Clone + Copy,
+    F: Fn(T, T) -> UT,
+    UT: Ord,
 {
-    find_closest_value_in_bst_1_helper(&tree.root, data, std::i32::MAX)
+    let node = &Some(Box::from(tree));
+    find_closest_value_in_bst_1_helper(node, data, max, abs_diff_calculator)
 }
 
-fn find_closest_value_in_bst_1_helper(
-    node: &Option<Box<Node<i32>>>,
-    target: i32,
-    closest: i32,
-) -> Option<i32> {
+fn find_closest_value_in_bst_1_helper<T, F, UT>(
+    node: &Option<Box<BinarySearchTree<T>>>,
+    target: T,
+    closest: T,
+    abs_diff_calculator: F,
+) -> Option<T>
+where
+    T: Ord + Clone + Copy,
+    F: Fn(T, T) -> UT,
+    UT: Ord,
+{
     let mut closest = closest;
 
     match node {
         Some(ref node) => {
-            if i32::abs(target - closest) > i32::abs(target - node.data) {
-                closest = node.data;
-            }
+            if let Some(value) = &node.get_value() {
+                let value = value.clone();
 
-            if target < node.data {
-                return find_closest_value_in_bst_1_helper(&node.left, target, closest);
-            } else if target > node.data {
-                return find_closest_value_in_bst_1_helper(&node.right, target, closest);
-            }
+                if abs_diff_calculator(target, closest) > abs_diff_calculator(target, value) {
+                    closest = value;
+                }
 
+                if target < value {
+                    return find_closest_value_in_bst_1_helper(
+                        node.get_left(),
+                        target,
+                        closest,
+                        abs_diff_calculator,
+                    );
+                } else if target > value {
+                    return find_closest_value_in_bst_1_helper(
+                        node.get_right(),
+                        target,
+                        closest,
+                        abs_diff_calculator,
+                    );
+                }
+            }
             return Some(closest);
         }
         None => Some(closest),
     }
 }
 
-pub fn find_closest_value_in_bst_2(tree: &BinarySearchTree<i32>, data: i32) -> Option<i32>
+pub fn find_closest_value_in_bst_2<T, F, UT>(
+    tree: BinarySearchTree<T>,
+    data: T,
+    max: T,
+    abs_diff_calculator: F,
+) -> Option<T>
 where
+    T: Ord + Clone + Copy,
+    F: Fn(T, T) -> UT,
+    UT: Ord,
 {
-    find_closest_value_in_bst_2_helper(&tree.root, data, std::i32::MAX)
+    find_closest_value_in_bst_2_helper(&Some(Box::from(tree)), data, max, abs_diff_calculator)
 }
 
-fn find_closest_value_in_bst_2_helper(
-    node: &Option<Box<Node<i32>>>,
-    target: i32,
-    closest: i32,
-) -> Option<i32> {
+fn find_closest_value_in_bst_2_helper<T, F, UT>(
+    node: &Child<T>,
+    target: T,
+    closest: T,
+    abs_diff_calculator: F,
+) -> Option<T>
+where
+    T: Ord + Clone + Copy,
+    F: Fn(T, T) -> UT,
+    UT: Ord,
+{
     let mut current_node = node;
     let mut closest = closest;
 
     loop {
         if let Some(node) = current_node {
-            if i32::abs(target - closest) > i32::abs(target - node.data) {
-                closest = node.data;
-            }
+            if let Some(value) = node.get_value() {
+                if abs_diff_calculator(target, closest) > abs_diff_calculator(target, value) {
+                    closest = value;
+                }
 
-            if target < node.data {
-                current_node = &node.left;
-            } else if target > node.data {
-                current_node = &node.right;
-            } else {
-                return Some(closest);
+                if target < value {
+                    current_node = node.get_left();
+                } else if target > value {
+                    current_node = node.get_right();
+                } else {
+                    return Some(closest);
+                }
             }
         } else {
             return Some(closest);
@@ -68,9 +114,9 @@ fn find_closest_value_in_bst_2_helper(
 mod tests {
     use super::*;
 
-    #[test]
-    fn bst_find_closest_value_1() {
+    fn get_full_bst() -> BinarySearchTree<i32> {
         let mut bst: BinarySearchTree<i32> = BinarySearchTree::new();
+
         bst.insert(7)
             .insert(9)
             .insert(15)
@@ -79,26 +125,52 @@ mod tests {
             .insert(25)
             .insert(18);
 
-        assert_eq!(find_closest_value_in_bst_1(&bst, 16), Some(15));
-        assert_eq!(find_closest_value_in_bst_1(&bst, 14), Some(15));
-        assert_eq!(find_closest_value_in_bst_1(&bst, 12), Some(10));
-        assert_eq!(find_closest_value_in_bst_1(&bst, 17), Some(18));
+        bst
+    }
+
+    #[test]
+    fn bst_find_closest_value_1() {
+        assert_eq!(
+            find_closest_value_in_bst_1(get_full_bst(), 16, i32::MAX, i32::abs_diff),
+            Some(15)
+        );
+
+        assert_eq!(
+            find_closest_value_in_bst_1(get_full_bst(), 14, i32::MAX, i32::abs_diff),
+            Some(15)
+        );
+
+        assert_eq!(
+            find_closest_value_in_bst_1(get_full_bst(), 12, i32::MAX, i32::abs_diff),
+            Some(10)
+        );
+
+        assert_eq!(
+            find_closest_value_in_bst_1(get_full_bst(), 17, i32::MAX, i32::abs_diff),
+            Some(18)
+        );
     }
 
     #[test]
     fn bst_find_closest_value_2() {
-        let mut bst: BinarySearchTree<i32> = BinarySearchTree::new();
-        bst.insert(7)
-            .insert(9)
-            .insert(15)
-            .insert(10)
-            .insert(20)
-            .insert(25)
-            .insert(18);
+        assert_eq!(
+            find_closest_value_in_bst_2(get_full_bst(), 16, i32::MAX, i32::abs_diff),
+            Some(15)
+        );
 
-        assert_eq!(find_closest_value_in_bst_2(&bst, 16), Some(15));
-        assert_eq!(find_closest_value_in_bst_2(&bst, 14), Some(15));
-        assert_eq!(find_closest_value_in_bst_2(&bst, 12), Some(10));
-        assert_eq!(find_closest_value_in_bst_2(&bst, 17), Some(18));
+        assert_eq!(
+            find_closest_value_in_bst_2(get_full_bst(), 14, i32::MAX, i32::abs_diff),
+            Some(15)
+        );
+
+        assert_eq!(
+            find_closest_value_in_bst_2(get_full_bst(), 12, i32::MAX, i32::abs_diff),
+            Some(10)
+        );
+
+        assert_eq!(
+            find_closest_value_in_bst_2(get_full_bst(), 17, i32::MAX, i32::abs_diff),
+            Some(18)
+        );
     }
 }
