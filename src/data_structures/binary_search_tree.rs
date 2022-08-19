@@ -96,7 +96,7 @@ where
     }
 
     /// Insert a value into the appropriate location in this tree.
-    pub fn insert(&mut self, value: T) {
+    pub fn insert(&mut self, value: T) -> &mut Self {
         if self.value.is_none() {
             self.value = Some(value);
         } else {
@@ -121,6 +121,8 @@ where
                 }
             }
         }
+
+        self
     }
 
     /// Returns the smallest value in this tree
@@ -257,13 +259,15 @@ mod test {
 
     fn prequel_memes_tree() -> BinarySearchTree<&'static str> {
         let mut tree = BinarySearchTree::new();
-        tree.insert("hello there");
-        tree.insert("general kenobi");
-        tree.insert("you are a bold one");
-        tree.insert("kill him");
-        tree.insert("back away...I will deal with this jedi slime myself");
-        tree.insert("your move");
-        tree.insert("you fool");
+
+        tree.insert("hello there")
+            .insert("general kenobi")
+            .insert("you are a bold one")
+            .insert("kill him")
+            .insert("back away...I will deal with this jedi slime myself")
+            .insert("your move")
+            .insert("you fool");
+
         tree
     }
 
@@ -281,8 +285,8 @@ mod test {
         let mut tree: BinarySearchTree<i32> = BinarySearchTree::new();
         assert!(tree.is_leaf());
 
-        tree.insert(5);
-        tree.insert(7);
+        tree.insert(5).insert(7);
+
         assert_eq!(tree.is_leaf(), false);
     }
 
@@ -294,8 +298,7 @@ mod test {
             None => assert!(true),
         }
 
-        tree.insert(5);
-        tree.insert(3);
+        tree.insert(5).insert(3);
 
         match tree.get_left() {
             Some(tree) => assert_eq!(tree.get_value(), Some(3)),
@@ -311,9 +314,7 @@ mod test {
             None => assert!(true),
         }
 
-        tree.insert(5);
-        tree.insert(3);
-        tree.insert(7);
+        tree.insert(5).insert(3).insert(7);
 
         match tree.get_right() {
             Some(tree) => assert_eq!(tree.get_value(), Some(7)),
