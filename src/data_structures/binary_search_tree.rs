@@ -1,5 +1,6 @@
-// copied from https://github.com/TheAlgorithms/Rust/blob/master/src/data_structures/binary_search_tree.rs
+// used from https://github.com/TheAlgorithms/Rust/blob/master/src/data_structures/binary_search_tree.rs
 
+use std::clone;
 use std::cmp::Ordering;
 use std::ops::Deref;
 
@@ -18,7 +19,7 @@ pub type Child<T> = Option<Box<BinarySearchTree<T>>>;
 
 impl<T> Default for BinarySearchTree<T>
 where
-    T: Ord,
+    T: Ord + Clone,
 {
     fn default() -> Self {
         Self::new()
@@ -27,7 +28,7 @@ where
 
 impl<T> BinarySearchTree<T>
 where
-    T: Ord,
+    T: Ord + Clone,
 {
     /// Create a new, empty BST
     pub fn new() -> BinarySearchTree<T> {
@@ -36,6 +37,18 @@ where
             left: None,
             right: None,
         }
+    }
+
+    pub fn get_value(&self) -> Option<T> {
+        self.value.clone()
+    }
+
+    pub fn get_left(&self) -> &Child<T> {
+        &self.left
+    }
+
+    pub fn get_right(&self) -> &Child<T> {
+        &self.right
     }
 
     /// Find a value in this tree. Returns True iff value is in this
@@ -243,6 +256,50 @@ mod test {
         tree.insert("your move");
         tree.insert("you fool");
         tree
+    }
+
+    #[test]
+    fn test_get_value() {
+        let mut tree: BinarySearchTree<i32> = BinarySearchTree::new();
+        assert_eq!(tree.get_value(), None);
+
+        tree.insert(5);
+        assert_eq!(tree.get_value(), Some(5));
+    }
+
+    #[test]
+    fn test_get_left() {
+        let mut tree: BinarySearchTree<i32> = BinarySearchTree::new();
+        match tree.get_left() {
+            Some(_) => assert!(false),
+            None => assert!(true),
+        }
+
+        tree.insert(5);
+        tree.insert(3);
+
+        match tree.get_left() {
+            Some(tree) => assert_eq!(tree.get_value(), Some(3)),
+            None => assert!(false),
+        }
+    }
+
+    #[test]
+    fn test_get_right() {
+        let mut tree: BinarySearchTree<i32> = BinarySearchTree::new();
+        match tree.get_right() {
+            Some(_) => assert!(false),
+            None => assert!(true),
+        }
+
+        tree.insert(5);
+        tree.insert(3);
+        tree.insert(7);
+
+        match tree.get_right() {
+            Some(tree) => assert_eq!(tree.get_value(), Some(7)),
+            None => assert!(false),
+        }
     }
 
     #[test]
